@@ -203,8 +203,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun dismissAdModal() {
         _showAdModal.value = false
     }
-        _showAdModal.value = false
-    }
 
     // Payment Flow
     fun openPaymentModal(pkg: CoinPackage) {
