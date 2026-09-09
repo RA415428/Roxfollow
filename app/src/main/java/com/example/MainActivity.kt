@@ -72,12 +72,22 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        setContent {
-            val isDarkTheme by viewModel.isDarkTheme.collectAsState()
-
-            MyApplicationTheme(darkTheme = isDarkTheme) {
-                MainAppEntry(this@MainActivity, viewModel)
+        try {
+            setContent {
+                val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+                MyApplicationTheme(darkTheme = isDarkTheme) {
+                    MainAppEntry(this@MainActivity, viewModel)
+                }
             }
+        } catch (e: Throwable) {
+            val error = android.widget.TextView(this).apply {
+                text = "STARTUP ERROR\n\n" + e.stackTraceToString()
+                textSize = 14f
+                setTextColor(android.graphics.Color.WHITE)
+                setBackgroundColor(android.graphics.Color.BLACK)
+                setPadding(32, 32, 32, 32)
+            }
+            setContentView(error)
         }
     }
 }
