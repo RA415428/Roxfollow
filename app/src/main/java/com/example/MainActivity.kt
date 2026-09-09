@@ -61,24 +61,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        AdActivityTimer.start(this) {
-            viewModel.startAutomaticRewardedAd(this)
-        }
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        com.example.AdminRewardConfig.initialize()
-        UnityRewardedAdManager.initialize(this)
         try {
             enableEdgeToEdge()
         } catch (_: Exception) {
         }
 
-        AdActivityTimer.start(this) {
-            viewModel.startAutomaticRewardedAd(this)
-        }
 
         setContent {
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()

@@ -88,7 +88,12 @@ object UnityRewardedAdManager {
             return
         }
 
-        if (!initialized || !ready) {
+        if (!initialized) {
+            initialize(activity)
+            onFailure()
+            return
+        }
+        if (!ready) {
             loadRewarded()
             onFailure()
             return
