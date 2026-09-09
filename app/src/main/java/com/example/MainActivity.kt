@@ -76,14 +76,14 @@ class MainActivity : ComponentActivity() {
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()
 
             MyApplicationTheme(darkTheme = isDarkTheme) {
-                MainAppEntry(viewModel)
+                MainAppEntry(this@MainActivity, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainAppEntry(viewModel: AppViewModel) {
+fun MainAppEntry(activity: MainActivity, viewModel: AppViewModel) {
     val currentScreen by viewModel.currentScreen.collectAsState()
     val activeTab by viewModel.activeTab.collectAsState()
     val isConnected by viewModel.isInternetConnected.collectAsState()
@@ -154,7 +154,7 @@ fun MainAppEntry(viewModel: AppViewModel) {
                                     wallet = wallet,
                                     expandedCategoryId = expandedCategory,
                                     onToggleCategory = { viewModel.toggleCategoryExpansion(it) },
-                                    onWatchAdsClick = { viewModel.startRewardedAd(this@MainActivity) },
+                                    onWatchAdsClick = { viewModel.startRewardedAd(activity) },
                                     onCopyIdClick = { viewModel.copyToClipboard(wallet.memberId, "Member ID") },
                                     onCopyHashtagsClick = { viewModel.copyToClipboard(it, "Hashtags") }
                                 )
@@ -182,7 +182,7 @@ fun MainAppEntry(viewModel: AppViewModel) {
                                     wallet = wallet,
                                     isDarkTheme = isDarkTheme,
                                     onToggleTheme = { viewModel.toggleTheme() },
-                                    onNavigateTab = { tab -> BottomNavAdCounter.registerClick(tab.name) { viewModel.startRewardedAd(this@MainActivity) }; viewModel.selectTab(tab) },
+                                    onNavigateTab = { tab -> BottomNavAdCounter.registerClick(tab.name) { viewModel.startRewardedAd(activity) }; viewModel.selectTab(tab) },
                                     onOpenDialog = { viewModel.openDialog(it) },
                                     onCopyIdClick = { viewModel.copyToClipboard(wallet.memberId, "Member ID") }
                                 )

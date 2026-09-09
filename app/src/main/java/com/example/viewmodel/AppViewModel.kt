@@ -14,7 +14,6 @@ import com.example.data.OrderStatus
 import com.example.data.ServiceOption
 import com.example.data.UserWallet
 import com.example.network.ConnectivityObserver
-import com.example.network.NetworkConnectivityObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +40,6 @@ enum class MainTab {
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val connectivityObserver = NetworkConnectivityObserver(application)
 
     // App Navigation State
     private val _currentScreen = MutableStateFlow(AppScreen.MAIN_APP)
@@ -96,38 +94,23 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val lastPlacedOrder: StateFlow<Order?> = _lastPlacedOrder.asStateFlow()
 
     init {
-        // Observe network connectivity continuously
+        // Network observer disabled during startup to prevent startup crash
         viewModelScope.launch {
             try {
-                connectivityObserver.observe().collect { status ->
-                    _networkStatus.value = status
-                    val isConnected = (status == ConnectivityObserver.Status.Available)
-                    _isInternetConnected.value = isConnected
-                }
-            } catch (_: Exception) {
-                _isInternetConnected.value = true
-            }
-        }
-
-        // Handle splash screen flow smoothly
-        viewModelScope.launch {
-            try {
-                delay(800) // Splash delay
+                delay(800)
                 _currentScreen.value = AppScreen.LOADING
-                delay(600) // Short loading transition
+                delay(600)
                 _currentScreen.value = AppScreen.MAIN_APP
             } catch (_: Exception) {
                 _currentScreen.value = AppScreen.MAIN_APP
             }
         }
     }
-
     fun selectTab(tab: MainTab) {
         _activeTab.value = tab
     }
 
     fun retryConnection() {
-        val isConnected = connectivityObserver.isCurrentlyConnected()
         _isInternetConnected.value = isConnected
         if (isConnected) {
             _currentScreen.value = AppScreen.MAIN_APP
