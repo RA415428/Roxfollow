@@ -1,25 +1,30 @@
 package com.example
 
 import android.app.Application
+import android.os.Environment
 import java.io.File
 
 class RoxyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val oldHandler = Thread.getDefaultUncaughtExceptionHandler()
+        val handler = Thread.getDefaultUncaughtExceptionHandler()
 
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             try {
-                val file = File(getExternalFilesDir(null), "roxy_crash.txt")
-                file.writeText(
+                val dir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                )
+                dir.mkdirs()
+
+                File(dir, "roxy_crash.txt").writeText(
                     "THREAD: ${thread.name}\n\n" +
                     "EXCEPTION:\n${throwable.stackTraceToString()}"
                 )
             } catch (_: Exception) {
             }
 
-            oldHandler?.uncaughtException(thread, throwable)
+            handler?.uncaughtException(thread, throwable)
         }
     }
 }
